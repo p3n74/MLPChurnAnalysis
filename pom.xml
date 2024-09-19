@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>MLPChurnAnalysis</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- Corrected this line -->
+    </properties>
+
+    <dependencies>
+
+        <!-- Deeplearning4j core and neural network libraries -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-nn</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
+
+        <dependency>
+        <groupId>org.deeplearning4j</groupId>
+        <artifactId>deeplearning4j-nlp</artifactId>
+        <version>1.0.0-M2.1</version>
+    </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.nd4j/nd4j-native-platform -->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.nd4j/nd4j-native -->
+
+
+        <!-- SLF4J for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0</version> <!-- Ensure compatibility with your logging backend -->
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.0</version> <!-- Simple logger for SLF4J -->
+        </dependency>
+
+
+
+        <!-- Apache Commons Math library -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version> <!-- Use the latest version -->
+        </dependency>
+
+        <!-- OpenCSV -->
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.6</version> <!-- or the latest version -->
+        </dependency>
+
+
+        <!-- Tensorflow -->
+        <dependency>
+            <groupId>org.tensorflow</groupId>
+            <artifactId>tensorflow-core-platform</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+
+        <!-- DJL API -->
+        <dependency>
+            <groupId>ai.djl</groupId>
+            <artifactId>api</artifactId>
+            <version>0.30.0</version>
+        </dependency>
+
+        <!-- DJL Model Zoo -->
+        <dependency>
+            <groupId>ai.djl</groupId>
+            <artifactId>model-zoo</artifactId>
+            <version>0.30.0</version>
+        </dependency>
+
+        <!-- DJL Basic Dataset -->
+        <dependency>
+            <groupId>ai.djl</groupId>
+            <artifactId>basicdataset</artifactId>
+            <version>0.29.0</version> <!-- Latest available version -->
+        </dependency>
+
+        <!-- DJL TensorFlow Engine -->
+        <dependency>
+            <groupId>ai.djl.tensorflow</groupId>
+            <artifactId>tensorflow-engine</artifactId>
+            <version>0.30.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ai.djl.tensorflow</groupId>
+            <artifactId>tensorflow-model-zoo</artifactId>
+            <version>0.30.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
