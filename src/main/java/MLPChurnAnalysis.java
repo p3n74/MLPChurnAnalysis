@@ -66,14 +66,10 @@ public class MLPChurnAnalysis {
         genderMap.put("Male", 1);
 
         // Skip header row
-        boolean firstRow = true;
-        for (String[] row : data) {
-            if (firstRow) {
-                firstRow = false; // Skip the first row (header)
-                continue;
-            }
+        for (int i = 1; i < data.size(); i++) {
+            String[] row = data.get(i);
 
-            double[] features = new double[10];  // Size matches the number of features we want to keep
+            double[] features = new double[10];
 
             try {
                 features[0] = Double.parseDouble(row[3]);  // CreditScore
@@ -109,10 +105,10 @@ public class MLPChurnAnalysis {
         return features;
     }
 
-
     private static int[] extractTarget(List<String[]> data) {
         List<Integer> targetList = new ArrayList<>();
-        for (String[] row : data) {
+        for (int i = 1; i < data.size(); i++) { // Start from 1 to skip header
+            String[] row = data.get(i);
             try {
                 int target = Integer.parseInt(row[13]); // Exited
                 targetList.add(target);
