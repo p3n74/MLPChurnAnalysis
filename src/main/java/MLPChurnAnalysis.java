@@ -28,26 +28,25 @@ public class MLPChurnAnalysis {
 
         // dataset is not normalized right now
 
-        //double[][] normalizedFeatures = normalizeFeatures(features);
+        double[][] normalizedFeatures = normalizeFeatures(features);
 
         // Define the number of inputs and outputs
         int numInputs = 10; // Number of features
         int numOutputs = 2; // Binary classification (0 or 1)
 
-        // Build the model
         MultiLayerNetwork model = buildModel(numInputs, numOutputs);
 
         // Initialize the model
         model.init();
         model.setListeners(new ScoreIterationListener(10));  // Print score every 10 iterations
 
-        // Optionally split data into training and testing sets
+
         double trainFraction = 0.8; // 80% for training
         int[] target = extractTarget(data); // Extract target labels
-        DataSet[] dataSets = splitDataIntoDataSet(features, target, trainFraction);
+        DataSet[] dataSets = splitDataIntoDataSet(normalizedFeatures, target, trainFraction);
 
-        // Train and evaluate the model
-        trainModel(model, dataSets[0], 1000);  // Train the model with 100 epochs
+
+        trainModel(model, dataSets[0], 100);  // Train the model with 100 epochs
         evaluateModel(model, dataSets[1]);
 
     }
@@ -62,7 +61,7 @@ public class MLPChurnAnalysis {
     // Method to evaluate the model
     private static void evaluateModel(MultiLayerNetwork model, DataSet testData) {
         INDArray output = model.output(testData.getFeatures());
-        Evaluation eval = new Evaluation(2); // Assuming binary classification
+        Evaluation eval = new Evaluation(2); // binary classification
         eval.eval(testData.getLabels(), output);
         System.out.println(eval.stats());
     }
@@ -316,11 +315,11 @@ public class MLPChurnAnalysis {
     }
 
     private static MultiLayerNetwork buildModel(int numInputs, int numOutputs) {
-        int numHiddenNodes = 64; // Number of nodes in the hidden layer
+        int numHiddenNodes = 64;
 
         MultiLayerConfiguration config = new NeuralNetConfiguration.Builder()
-                .seed(123) // For reproducibility
-                .updater(new Adam(0.001)) // Optimizer
+                .seed(123)
+                .updater(new Adam(0.001)) // Adam Optimizer
                 .list()
                 .layer(0, new DenseLayer.Builder()
                         .nIn(numInputs)
@@ -329,9 +328,9 @@ public class MLPChurnAnalysis {
                         .build())
                 .layer(1, new OutputLayer.Builder()
                         .nIn(numHiddenNodes)
-                        .nOut(numOutputs)  // Change numOutputs to the number of classes
+                        .nOut(numOutputs)  //
                         .activation(Activation.SOFTMAX)  // Use softmax for multi-class
-                        .lossFunction(LossFunctions.LossFunction.MCXENT)  // Multi-class cross-entropy
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)  // cross-entropy loss function
                         .build())
                 .build();
 
