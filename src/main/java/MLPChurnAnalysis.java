@@ -23,47 +23,60 @@ import java.util.stream.IntStream;
 public class MLPChurnAnalysis {
 
     public static void main(String[] args) {
+        // Load and preprocess data (manually split and normalize, no DataSetIterator)
         List<String[]> data = loadDataSet("/Users/bastionii/Documents/GitHub/Machine Learning/data/bank_data.csv");
         double[][] features = prepareData(data);
-
-        // dataset is not normalized right now
-
         double[][] normalizedFeatures = normalizeFeatures(features);
 
+
+
         // Define the number of inputs and outputs
-        int numInputs = 10; // Number of features
-        int numOutputs = 2; // Binary classification (0 or 1)
+        int numInputs = 10;
+        int numOutputs = 2;
 
+        // Build the model
         MultiLayerNetwork model = buildModel(numInputs, numOutputs);
-
-        // Initialize the model
         model.init();
-        model.setListeners(new ScoreIterationListener(10));  // Print score every 10 iterations
-
 
         double trainFraction = 0.8; // 80% for training
         int[] target = extractTarget(data); // Extract target labels
         DataSet[] dataSets = splitDataIntoDataSet(normalizedFeatures, target, trainFraction);
 
 
-        trainModel(model, dataSets[0], 100);  // Train the model with 100 epochs
-        evaluateModel(model, dataSets[1]);
+        // Display training progress in a GUI
+        DL4JModelEvaluationGUI gui = new DL4JModelEvaluationGUI();
+        gui.createAndShowGUI(); // Pass the test dataset to evaluate
+
+        // Train the model and update the chart with score after every epoch
+        trainModel(model, dataSets[0], 1000, gui, dataSets[1]);  // Train for 1000 epochs, update GUI
 
     }
 
-    // Method to train the model
-    private static void trainModel(MultiLayerNetwork model, DataSet trainingData, int numEpochs) {
-        for (int i = 0; i < numEpochs; i++) {
-            model.fit(trainingData);
+    public static void trainModel(MultiLayerNetwork model, DataSet trainData, int epochs, DL4JModelEvaluationGUI gui, DataSet testData) {
+        for (int i = 0; i < epochs; i++) {
+            model.fit(trainData);  // Train the model with the current dataset
+            double score = model.score();  // Get the score after this iteration
+            System.out.println("Epoch " + i + " complete. Score: " + score);  // Debug print
+
+            // Update the GUI chart with the score
+            gui.updateChart(i, score);
         }
+
+        // After training, evaluate the model on the test data and display the results
+        String evalResults = evaluateModel(model, testData);
+        gui.showEvaluationResults(evalResults);  // Show results in a new GUI window
+
+
     }
 
     // Method to evaluate the model
-    private static void evaluateModel(MultiLayerNetwork model, DataSet testData) {
+    private static String evaluateModel(MultiLayerNetwork model, DataSet testData) {
         INDArray output = model.output(testData.getFeatures());
         Evaluation eval = new Evaluation(2); // binary classification
         eval.eval(testData.getLabels(), output);
-        System.out.println(eval.stats());
+
+        // Get evaluation stats as a string and return it
+        return eval.stats();
     }
 
     // Modify the splitDataIntoDataSet method
@@ -315,24 +328,63 @@ public class MLPChurnAnalysis {
     }
 
     private static MultiLayerNetwork buildModel(int numInputs, int numOutputs) {
-        int numHiddenNodes = 64;
+        int numHiddenNodes = 96;
 
         MultiLayerConfiguration config = new NeuralNetConfiguration.Builder()
                 .seed(123)
-                .updater(new Adam(0.001)) // Adam Optimizer
+                .updater(new Adam(0.0001)) // Adam Optimizer
                 .list()
+
                 .layer(0, new DenseLayer.Builder()
                         .nIn(numInputs)
                         .nOut(numHiddenNodes)
                         .activation(Activation.RELU)
                         .build())
-                .layer(1, new OutputLayer.Builder()
+
+                .layer(1, new DenseLayer.Builder()
+                        .nIn(numHiddenNodes)  // Input from the first hidden layer
+                        .nOut(numHiddenNodes) // Number of nodes in the second hidden layer
+                        .activation(Activation.SIGMOID)  // Sigmoid activation function
+                        .build())
+
+                .layer(2, new DenseLayer.Builder()
+                        .nIn(numHiddenNodes)  // Input from the first hidden layer
+                        .nOut(numHiddenNodes) // Number of nodes in the second hidden layer
+                        .activation(Activation.SIGMOID)  // Sigmoid activation function
+                        .build())
+
+                .layer(3, new OutputLayer.Builder()
                         .nIn(numHiddenNodes)
                         .nOut(numOutputs)  //
                         .activation(Activation.SOFTMAX)  // Use softmax for multi-class
                         .lossFunction(LossFunctions.LossFunction.MCXENT)  // cross-entropy loss function
                         .build())
                 .build();
+
+
+                /*
+                *
+                * .layer(0, new DenseLayer.Builder()
+                        .nIn(numInputs)
+                        .nOut(numHiddenNodes)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer(1, new DenseLayer.Builder()
+                                .nIn(numHiddenNodes)
+                                .nOut(numOutputs)
+                                .activation(Activation.GELU)
+                                .build()
+                        )
+                .layer(2, new OutputLayer.Builder()
+                        .nIn(numOutputs)
+                        .nOut(numHiddenNodes)  //
+                        .activation(Activation.SOFTMAX)  // Use softmax for multi-class
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)  // cross-entropy loss function
+                        .build())
+                .build();
+                *
+                * */
+
 
         return new MultiLayerNetwork(config);
     }

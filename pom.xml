@@ -16,6 +16,14 @@
 
     <dependencies>
 
+        <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.5</version>
+        </dependency>
+
+
         <!-- Deeplearning4j core and neural network libraries -->
         <dependency>
             <groupId>org.deeplearning4j</groupId>
@@ -37,11 +45,11 @@
 
 
         <!-- https://mvnrepository.com/artifact/org.nd4j/nd4j-native-platform -->
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native</artifactId>
-            <version>1.0.0-M2.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.nd4j</groupId>-->
+<!--            <artifactId>nd4j-native</artifactId>-->
+<!--            <version>1.0.0-M2.1</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native</artifactId>
